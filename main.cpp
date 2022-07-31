@@ -1,4 +1,6 @@
+#include <vector>
 #include <iostream>
+#include <fstream>
 #include <map>
 
 
@@ -15,12 +17,45 @@
 //a    :  20
 
 
-int main () { // Get the file name from the command line.
+int main (int argc, char **argv) { // Get the file name from the command line.
+    if (argc != 2) {
+        std::cout << "Usage: " << argv[0] << " <file_name>" << std::endl;
+        return 1;
+    }
 
     std::map<std::string, int> dictionary;
 
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+    std::ifstream file(argv[1]);
+
+    if (!file.is_open()) {
+        std::cout << "File " << argv[1] << " is not open" << std::endl;
+        return 1;
+    }
+
+    std::string word;
+    while (file >> word) {
+        dictionary[word]++;
+    }
+
+    file.close();
+
+    std::vector<std::pair<std::string, int>> sorted_dictionary;
+
+    for (auto &pair : dictionary) {
+        sorted_dictionary.emplace_back(pair.first, pair.second);
+    }
+    //Sort the dictionary by the frequency of the words.
+    std::sort(sorted_dictionary.begin(), sorted_dictionary.end(),
+              [](const std::pair<std::string, int> &a, const std::pair<std::string, int> &b) {
+                  return a.second > b.second;
+              });
+
+    std::cout << "Total words: " << dictionary.size() << std::endl;
+
+    for (auto &pair : sorted_dictionary) {
+        std::cout << pair.first << "\t : \t" << pair.second << std::endl;
+    }
+
 }
 
 //Step 1: Open the file from Argument and read word by word.
