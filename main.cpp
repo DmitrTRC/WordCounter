@@ -16,6 +16,9 @@
 //to   :  30
 //a    :  20
 
+void erasePunctuation (std::string &text) {
+    text.erase (std::remove_if (text.begin (), text.end (), ::ispunct), text.end ());
+}
 
 int main (int argc, char **argv) { // Get the file name from the command line.
     if (argc != 2) {
@@ -25,34 +28,35 @@ int main (int argc, char **argv) { // Get the file name from the command line.
 
     std::map<std::string, int> dictionary;
 
-    std::ifstream file(argv[1]);
+    std::ifstream file (argv[1]);
 
-    if (!file.is_open()) {
+    if (!file.is_open ()) {
         std::cout << "File " << argv[1] << " is not open" << std::endl;
         return 1;
     }
 
     std::string word;
     while (file >> word) {
+        erasePunctuation (word);
         dictionary[word]++;
     }
 
-    file.close();
+    file.close ();
 
     std::vector<std::pair<std::string, int>> sorted_dictionary;
 
-    for (auto &pair : dictionary) {
-        sorted_dictionary.emplace_back(pair.first, pair.second);
+    for (auto &pair: dictionary) {
+        sorted_dictionary.emplace_back (pair.first, pair.second);
     }
     //Sort the dictionary by the frequency of the words.
-    std::sort(sorted_dictionary.begin(), sorted_dictionary.end(),
-              [](const std::pair<std::string, int> &a, const std::pair<std::string, int> &b) {
-                  return a.second > b.second;
-              });
+    std::sort (sorted_dictionary.begin (), sorted_dictionary.end (),
+               [] (const std::pair<std::string, int> &a, const std::pair<std::string, int> &b) {
+                   return a.second > b.second;
+               });
 
-    std::cout << "Total words: " << dictionary.size() << std::endl;
+    std::cout << "Total words: " << dictionary.size () << std::endl;
 
-    for (auto &pair : sorted_dictionary) {
+    for (auto &pair: sorted_dictionary) {
         std::cout << pair.first << "\t : \t" << pair.second << std::endl;
     }
 
