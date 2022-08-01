@@ -16,8 +16,13 @@
 //to   :  30
 //a    :  20
 
-void erasePunctuation (std::string &text) {
-    text.erase (std::remove_if (text.begin (), text.end (), ::ispunct), text.end ());
+void erasePunctuation (std::string &str) {
+    for (int i = 0; i < str.length (); i++) {
+        if (ispunct (str[i])) {
+            str.erase (i, 1);
+            i--;
+        }
+    }
 }
 
 int main (int argc, char **argv) { // Get the file name from the command line.
